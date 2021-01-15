@@ -187,9 +187,9 @@ void raw_hid_receive(uint8_t *data, uint8_t length) {
         case OPENRGB_GET_DEVICE_VENDOR:
             openrgb_get_device_vendor();
             break;
-            
+
         case OPENRGB_GET_ENABLED_MODES:
-            openrgb_get_enabled_modes();
+            openrgb_get_enabled_modes(data);
             break;
         case OPENRGB_GET_ACTIVE_MODE:
             openrgb_get_active_mode();
@@ -388,15 +388,22 @@ void openrgb_get_device_vendor(void) {
 /////////////////////////////////////////////
 // Setup Modes
 /////////////////////////////////////////////
-void openrgb_get_enabled_modes(void) {
+void openrgb_get_enabled_modes(uint8_t *data) {
+    const uint8_t mode   = data[1];
+
     raw_hid_buffer[0] = OPENRGB_GET_ENABLED_MODES;
 
-    uint8_t i = 0;
-    while (i < RGB_MATRIX_EFFECT_MAX - 1) {
-        raw_hid_buffer[i + 1] = openrgb_rgb_matrix_effects_indexes[i];
-        i++;
+    for(int i = 0; i < RGB_MATRIX_EFFECT_MAX - 1; i++) {
+        if(openrgb_rgb_matrix_effects_indexes[i] == mode) {
+            raw_hid_buffer[1] = OPENRGB_SUCCESS;
+            break;
+        }
+        else {
+            raw_hid_buffer[1] = OPENRGB_FAILURE;
+        }
     }
-    raw_hid_buffer[i + 1] = OPENRGB_EOM;
+
+    raw_hid_buffer[2] = OPENRGB_EOM;
 }
 void openrgb_get_active_mode(void) {
     raw_hid_buffer[0] = OPENRGB_GET_ACTIVE_MODE;

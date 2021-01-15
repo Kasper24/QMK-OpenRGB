@@ -90,7 +90,7 @@ void openrgb_get_device_vendor(void);
 ////////////////////////////////////////////
 // Setup Modes
 /////////////////////////////////////////////
-void openrgb_get_enabled_modes(void);
+void openrgb_get_enabled_modes(uint8_t *data);
 void openrgb_get_active_mode(void);
 
 /////////////////////////////////////////////

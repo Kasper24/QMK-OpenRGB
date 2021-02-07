@@ -16,6 +16,8 @@
 
 #pragma once
 
+#define RAW_EPSIZE 64
+
 // This is changed only when the command IDs change,
 // so OpenRGB can detect compatible firmware.
 #define OPENRGB_PROTOCOL_VERSION 0x01

@@ -351,18 +351,32 @@ void openrgb_get_protocol_version(void) {
     raw_hid_buffer[2] = OPENRGB_EOM;
 }
 void openrgb_get_device_name(void) {
+    #define MASSDROP_VID 0x04D8
+    #if VENDOR_ID == MASSDROP_VID
+        #define PRODUCT_STRING PRODUCT
+    #else
+        #define PRODUCT_STRING STR(PRODUCT)
+    #endif
+
     uint8_t i = 0;
-    while (PRODUCT[i] != 0 && i + 2 < RAW_EPSIZE) {
-        raw_hid_buffer[i + 1] = PRODUCT[i];
+    while (PRODUCT_STRING[i] != 0 && i + 2 < RAW_EPSIZE) {
+        raw_hid_buffer[i + 1] = PRODUCT_STRING[i];
         i++;
     }
     raw_hid_buffer[0]     = OPENRGB_GET_DEVICE_NAME;
     raw_hid_buffer[i + 1] = OPENRGB_EOM;
 }
-void openrgb_get_device_vendor(void) { 
+void openrgb_get_device_vendor(void) {
+    #define MASSDROP_VID 0x04D8
+    #if VENDOR_ID == MASSDROP_VID
+        #define MANUFACTURER_STRING MANUFACTURER
+    #else
+        #define MANUFACTURER_STRING STR(MANUFACTURER)
+    #endif
+
     uint8_t i = 0;
-    while (MANUFACTURER[i] != 0 && i + 2 < RAW_EPSIZE) {
-        raw_hid_buffer[i + 1] = MANUFACTURER[i];
+    while (MANUFACTURER_STRING[i] != 0 && i + 2 < RAW_EPSIZE) {
+        raw_hid_buffer[i + 1] = MANUFACTURER_STRING[i];
         i++;
     }
     raw_hid_buffer[0]     = OPENRGB_GET_DEVICE_VENDOR;

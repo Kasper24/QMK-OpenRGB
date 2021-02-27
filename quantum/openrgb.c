@@ -37,7 +37,7 @@
 #    define OPENRGB_DIRECT_MODE_STARTUP_GREEN 255
 #endif
 
-RGB g_openrgb_direct_mode_colors[DRIVER_LED_TOTAL] = {[0 ... DRIVER_LED_TOTAL - 1] = 
+RGB g_openrgb_direct_mode_colors[DRIVER_LED_TOTAL] = {[0 ... DRIVER_LED_TOTAL - 1] =
     {OPENRGB_DIRECT_MODE_STARTUP_GREEN, OPENRGB_DIRECT_MODE_STARTUP_RED, OPENRGB_DIRECT_MODE_STARTUP_BLUE}};
 static const uint8_t openrgb_rgb_matrix_effects_indexes[] = {
     1,  2,
@@ -495,7 +495,7 @@ void openrgb_get_led_value_in_matrix(uint8_t *data) {
     const uint8_t row    = data[2];
 
     raw_hid_buffer[0] = OPENRGB_GET_LED_VALUE_IN_MATRIX;
-    
+
 #ifdef OPENRGB_USE_CUSTOM_MATRIX_MAP
     if (col >= OPENRGB_MATRIX_COLUMNS || row >= OPENRGB_MATRIX_ROWS) {
         raw_hid_buffer[1] = OPENRGB_FAILURE;
@@ -527,7 +527,13 @@ void openrgb_get_led_name(uint8_t *data) {
         return;
     }
 
-    uint8_t index         = g_openrgb_config.key_index_to_physical_position_map[row][col];
+    uint8_t index = g_openrgb_config.key_index_to_physical_position_map[row][col];
+
+    if(index == 255) {
+        raw_hid_buffer[1] = 255;
+        return;
+    }
+
     uint8_t matrix_co_row = index / MATRIX_COLS;
     uint8_t matrix_co_col = index % MATRIX_COLS;
     raw_hid_buffer[1] = keymaps[0][matrix_co_row][matrix_co_col];

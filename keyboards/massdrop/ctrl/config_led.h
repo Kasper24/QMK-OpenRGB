@@ -18,11 +18,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #pragma once
 
 #ifdef OPENRGB_ENABLE
-#define OPENRGB_ZONES_COUNT 2
+#define OPENRGB_ZONES_COUNT 1
 #define OPENRGB_USE_CUSTOM_MATRIX_MAP
 #ifdef OPENRGB_USE_CUSTOM_MATRIX_MAP
-    #define OPENRGB_MATRIX_COLUMNS 17
-    #define OPENRGB_MATRIX_ROWS 6
+    #define OPENRGB_MATRIX_COLUMNS 20
+    #define OPENRGB_MATRIX_ROWS 8
 #endif
 #endif
 

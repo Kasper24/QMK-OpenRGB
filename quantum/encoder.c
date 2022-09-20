@@ -55,6 +55,7 @@ static int8_t encoder_LUT[] = {0, -1, 1, 0, 1, 0, 0, -1, -1, 0, 0, 1, 0, 1, -1, 
 
 static uint8_t encoder_state[NUM_ENCODERS]  = {0};
 static int8_t  encoder_pulses[NUM_ENCODERS] = {0};
+static bool    encoder_external_update[NUM_ENCODERS] = { false };
 
 // encoder counts
 static uint8_t thisCount;
@@ -194,10 +195,11 @@ bool encoder_read(void) {
     bool changed = false;
     for (uint8_t i = 0; i < thisCount; i++) {
         uint8_t new_status = (readPin(encoders_pad_a[i]) << 0) | (readPin(encoders_pad_b[i]) << 1);
-        if ((encoder_state[i] & 0x3) != new_status) {
+        if ((encoder_state[i] & 0x3) != new_status || encoder_external_update[i]) {
             encoder_state[i] <<= 2;
             encoder_state[i] |= new_status;
             changed |= encoder_update(i, encoder_state[i]);
+            encoder_external_update[i] = false;
         }
     }
     return changed;
@@ -241,3 +243,10 @@ void encoder_update_raw(uint8_t *slave_state) {
     if (changed) last_encoder_activity_trigger();
 }
 #endif
+
+void encoder_insert_state(uint8_t index) {
+    encoder_state[index] <<= 2;
+    encoder_state[index] |= (readPin(encoders_pad_a[index]) << 0) | (readPin(encoders_pad_b[index]) << 1);
+    encoder_pulses[index] += encoder_LUT[encoder_state[index] & 0xF];
+    encoder_external_update[index] = true;
+}
